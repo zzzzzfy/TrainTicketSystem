@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+    <head>
+		<script type="text/javascript" src="../static/js/jquery-3.3.1.min.js"></script>
+		<script>
+			$(document).ready(function(){
+			var $tmp = $("#1");
+			$tmp2 = $tmp;
+			try
+			{
+				alert(1);
+			$tmp.sort(function(a,b){
+				alert(2);
+				if(a.innerHTML > b.innerHTML)
+					return 1;
+				else
+					return -1;
+			});
+				$("body").append($("body div"));
+				alert($tmp === $tmp2);
+	//			alert(3);
+	//			$("body").append($tmp2);
+			}
+			catch(e)
+			{alert(e.message);}
+			});
+		</script>
+    </head>
+    <body>
+        <div id="1">4</div>
+        <div>3</div>
+        <div>2</div>
+        <div>1</div>
+    </body>
+</html>

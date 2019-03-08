@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>233</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../static/css/w3.css" rel="stylesheet" type="text/css">
+<link href="../static/css/ticket.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="../static/css/font-awesome.min.css">
+<link rel="stylesheet" href="../static/css/icon.css">
+<link href="../static/css/jquery-ui.css" rel="stylesheet" type="text/css">
+<link href="../static/css/tyle.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery-ui.js"></script>
+<script src="../static/js/ticket.js"></script>
+<script src="../static/js/cityTemplate.js"></script>
+<script src="../static/js/plug-in.js"></script>
+</head>
+<body>
+
+<div class="mask"></div>
+<!--<div style="height: 55px; width: 100%;"></div>-->
+<div class="topnav" id="myTopnav" pagename="{{ page }}">
+  <a href="/home" class="{% if page and page == 'home' %}active{% endif %}"><i class="material-icons" style="position: relative; top: 6px;">home</i></a>
+  <a href="/search"class="{% if page and page == 'search' %}active{% endif %}"><i class="material-icons" style="position: relative; top: 6px;">search</i></a>
+  <a href="javascript:void(0)"class="{% if user_info and user_info.valid %}logged{% endif %} {% if page and page == 'login' %}active{% endif %}" style="float: right" id="user_button"><i class="material-icons" style="position: relative; top: 6px;">person</i><span id="user_name">{% if user_info and user_info.valid %}{{ user_info.name }}{% endif %}</span></a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+<form class="w3-card-4 login_window" login>
+  <div class="login_header">登录
+  <i class="w3-large fa fa-close close_icon" id="login_window_close"></i></div>
+  <div class="w3-margin login_content">
+	  <i class="material-icons" style="font-size: 80px">person</i>
+    <div class="w3-row w3-section">
+      <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-envelope-o"></i></div>
+      <div class="w3-rest">
+        <input class="w3-input w3-border" id="login_input" name="email" type="text" placeholder="邮箱/UID">
+      </div>
+    </div>
+    <div class="w3-row w3-section">
+      <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-key"></i></div>
+      <div class="w3-rest">
+        <input class="w3-input w3-border" id="password_input" name="password" type="password" placeholder="密码">
+      </div>
+	<div class="error_message" id="login_error_message"></div>
+    </div>
+	<div class="login_button" id="login_button">登录</div>
+	<div class="register_button" id="register_button">注册</div>
+</form>
+</div>
+<div class="w3-card-4 register_window">
+  <div class="login_header">注册
+  <i class="w3-large fa fa-arrow-left close_icon" id="return_to_login_window"></i>
+</div>
+  <div class="w3-margin register_content">
+    <form register>
+		<div class="w3-row w3-section">
+	    <div class="w3-col" style="width:50px"><i class="w3-xlarge fa fa-user-o" style="top: 6px; position: relative"></i></div>
+	    <div class="w3-rest">
+	      <input class="w3-input w3-border" id="register_name" name="login_input" type="text" placeholder="名字">
+        </div>
+      </div>
+	  <div class="w3-row w3-section">
+	    <div class="w3-col" style="width:50px"><i class="w3-xlarge fa fa-envelope-o" style="top: 6px; position: relative"></i></div>
+	    <div class="w3-rest">
+	      <input class="w3-input w3-border" id="register_email" name="register_email" type="text" placeholder="邮箱">
+        </div>
+      </div>
+		<div class="w3-row w3-section">
+	    <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-mobile"></i></div>
+	    <div class="w3-rest">
+	      <input class="w3-input w3-border" id="register_mobile" name="login_input" type="text" placeholder="手机">
+        </div>
+      </div>
+	  <div class="w3-row w3-section">
+	    <div class="w3-col" style="width:50px"><i class="w3-xlarge fa fa-key" style="top: 6px; position: relative"></i></div>
+	    <div class="w3-rest">
+	      <input class="w3-input w3-border" id="register_password" name="password_input" type="password" placeholder="密码">
+        </div>
+</div>
+    <div class="w3-row w3-section">
+	    <div class="w3-col" style="width:50px"><i class="w3-xlarge fa fa-key" style="opacity: 0"></i></div>
+	    <div class="w3-rest">
+	      <input class="w3-input w3-border" id="register_password_repeat" name="password_input" type="password" placeholder="重复密码">
+        </div>
+	    <div class="error_message" id="login_error_message3"></div>
+    </div>
+    </form>
+    <div class="login_button" style="margin-top: -5px" id="register_button2">注册</div>
+  </div>
+</div>
+<div class="user_menu glass_effect">
+  <div class="user_menu_container">
+    <div class="user_bar">
+      <i class="material-icons shrink_button">chevron_right</i>
+      <div class="uid_disp">UID:<span id="UID">{% if user_info and user_info.valid %}{{ user_info.uid }}{% endif %}</span></div>
+    </div>
+    <div class="menu">
+      <a href="/login">
+        <div class="option">
+          <i class="material-icons">account_box</i>
+          <div class="menu_text">个人资料</div>
+        </div>
+      </a>
+      <a href="/order">
+        <div class="option">
+          <i class="material-icons">directions_railway</i>
+          <div class="menu_text">购票记录</div>
+          <span class="badge" style="float:right">9</span> 
+        </div>
+      </a>
+      {% if user_info and user_info.privilege == 2 %}
+      <a href="/">
+        <div class="option">
+          <i class="material-icons">file_copy</i>
+          <div class="menu_text">数据管理</div>
+        </div>
+      </a>
+      {%endif%}
+      <a href="/chp">
+        <div class="option">
+          <i class="material-icons">vpn_key</i>
+          <div class="menu_text">修改密码</div>
+        </div>
+      </a>
+      <a href="/logout">
+        <div class="option">
+          <i class="material-icons">exit_to_app</i>
+          <div class="menu_text">登出</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+{%block content%}
+{%endblock%}
+</body>
+</html>

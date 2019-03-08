@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{%block head%}
+    <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        #tab{
+           overflow-x: auto;     
+        }
+        .form-control {
+            display: block;
+            width: 85%;
+            height: 30px;
+            padding: 6px 6px;
+            /* font-size: 14px; */
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        }
+         #tab td a:link {
+            font-size:16px;
+            /* color:red; */
+            text-decoration:none;
+        }
+         
+        #tab td a:visited {
+            font-size:16px;
+            /* color:red; */
+            text-decoration:none;
+
+        }
+         
+        #tab td a:hover {
+            font-size:16px;
+            color:#FF6600;
+            text-decoration:none;
+        }
+         
+        #tab td a:active {
+            font-size:16    px;
+            /* color:red; */
+            text-decoration:none;
+        }
+         
+
+        .newdot {
+            font-weight:bolder;
+            font-family:'幼圆';
+            margin-right:3px;
+        }
+
+
+        #tab {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 5px;
+        }
+        #tab td {
+            /*对所有被设置为position:relative的单元格会造成双重边,
+            所以不应该在td上应该position:relative*/
+            border: solid #101010 1px;
+            padding:3px;
+        }
+        #thead td {
+        background-color:#101010;
+        color:#FFFFFF;
+        }
+
+        .blocktip {
+            display:block;
+            color:#CCC;
+            margin-top:10px;
+        }
+        
+        #tbtoolbar {
+            text-align:center;    
+        }
+        
+    </style> 
+{%endblock%}
+    <!-- </style> -->
+{%block scripts%}
+{{ super() }}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+   $(document).ready(function(){
+        var tablejquery = '#tab'    //<table>的id设置,方便重用
+        
+        //设置所有的<tr/>居中
+        $(tablejquery+" tr").attr("align","center");
+
+        //模板
+        newtrtemp = function(index,refIndex) {
+            var nextTxtVal = '';
+            var nextSelectVal = '';    //附加值
+            var inputFtypeCK1 = ' selected="selected"';
+            var inputFtypeCK2 = '';
+            var inputFtypeCK3 = '';
+            var inputFtypeCK4 = '';
+            var inputFtypeCK5 = '';
+            var inputFtypeCK6 = '';
+                
+            var displayText = '';    //没有附加值时提示文本是否显示
+            var displaySelect = 'none';
+            var nextDefaultVal = '';//默认值
+                
+            if(!!refIndex) {    //如果需要引用其它tr的值作为构造的新tr值
+                var i = refIndex;
+            //i项的表单值
+                nextTxtVal = $("#inputFtip"+i).val();
+                nextTitleVal = $("#inputFtitle"+i).val();
+                // nextSelectVal = $("#inputFselect"+i).val();
+                // displayText = $('#changeselect'+i)[0].style.display == 'none'
+                //                     ? '' : 'none';
+                // displaySelect = $('#changeselect'+i)[0].style.display == 'none'
+                //                     ? 'none' : '';
+                nextDefaultVal = $("#inputFdefault"+i).val();
+            }
+            var tp = 1;
+            var tr =  "" 
+            +"    <tr id="+index+" align='center'>"
+            +"        <td><input style='width:14px;height:14px' class='form-control' type='checkbox' id='delck_"+index+"' /></td>"
+            +"        <td nowrap='nowrap'><div class='countnum' style='position:relative'>"+index+"<div class='newdot' id='new_"+index+"' style='color:red; font-size:12px;display:none;position:absolute;top:-8px; right:0px;'>new</div></div></td>"
+            +"        <td><input class='form-control' type='text' name='loca"+index+"' id='inputFtitle"+index+"'/></td>"
+            +"        <td><input class='form-control' type='text' name='begintime"+index+"' id='inputFtitle"+index+"'/></td>"
+            +"        <td><input class='form-control' type='text' name='endtime"+index+"' id='inputFtitle"+index+"'/></td>"
+            +"        <td><input class='form-control' type='text' name='overtime"+index+"' id='inputFtitle"+index+"'/></td>"
+            
+            {%for k in num_se%}
+            +"        <td><input class='form-control' type='text' name='seat"+index+{{k}}+"' id='inputFtitle"+index+"'/></td>"
+            {%endfor%}
+            +"        <td nowrap='nowrap'><a href=\'#\' onclick=\'deltr("+index+")\'>删除</a>&nbsp;&nbsp;<a href=\'#\' onclick=\'addnexttr("+index+")\'>下增</a>&nbsp;&nbsp;<a href=\'#\' onclick=\'addnexttr("+(index-1)+")\'>上增</a></td><td><a href=\'#\' onclick=\'moveup("+index+")\' id='moveup_"+index+"'>向上</a>&nbsp;&nbsp;<a id='movedown_"+index+"' href=\'#\' onclick=\'moveup("+(index+1)+")\'>向下</a></td>"
+            +"    </tr>";
+                
+                return tr;
+        }
+        
+        
+        //此行用于模拟服务器提交获取的数据
+        if(window.location.search!="") {$('#submitform').append('<p>服务器接收到的表单信息为:<br/>'+window.location.search+"</p>");}
+        
+        
+        //表单提交时的事件
+        $("#submitbtn").click(function(){
+            // $.post("/djb",{len:$("#inputlen").val()})
+            // $("#submitform").append('<br/>输入的行数为:'+$("#inputlen").val()+",即inputLen="+$("#inputlen").val()+"<br/>您可以在服务器端通过循环由1到inputLen获取表单数据,比如inputFtitle[inputLen]即为第inputLen个标题输入项&nbsp;&nbsp;&nbsp;&nbsp; <button onclick='document.getElementById(\"submitform\").submit();'>查看提交的表单数据</button>");
+            // return false;
+        });
+
+        
+        //全选反选处理
+        var allchecked = false;
+        $("#delckall").click(function(){
+            allchecked = !allchecked; 
+            for(var i=$("#inputlen").val()-0 ;i>=1; i--) {
+                $("#delck_"+i)[0].checked = (!allchecked) ? false : 'checked';
+                
+            }
+        });
+
+        //批量删除处理
+        $("#delbtn").click(function(){
+            for(var i=$(tablejquery+" tr").length-1 ;i>=1; i--) {
+                if($("#delck_"+i)[0].checked) {
+                    var delsometr = function(index) {
+                        deltr(index);
+                    }
+
+                    delsometr(i);    //删除单行
+                }
+            }
+            return false;
+        });
+
+
+        
+       
+        
+        //用于限制向上向下时的超界问题
+       var moveupHTML = "<a href=\'#\' onclick=\'moveup($k$)\' id='moveup_$k$'>向上</a>"
+       var movedownHTML = "<a id='movedown_$k$' href=\'#\' onclick=\'moveup($k+1$)\'>向下</a>"
+        //设置链接无效,供添加删除等调用
+       disableHref = function() {
+         var trlen = $(tablejquery+' tr').length;
+         $(tablejquery+' tr').each(function(k,v) {
+                //将所有的样式及限制还原
+                if(k>0 && k< trlen) {
+                    $('#moveup_'+k).replaceWith(moveupHTML.replace("$k$",k).replace("$k$",k));
+                    $('#movedown_'+k).replaceWith(movedownHTML.replace("$k$",k).replace("$k+1$",(k+1)));
+                }
+
+                //单独设置限定项
+                if(k==1){
+                    $('#moveup_'+k).replaceWith("<span style='font-weight:lighter;color:#CCC;font-size:12px;' id='moveup_"+k+"'>向上</span>");
+                }
+
+                if(k+1==trlen) {
+                    $('#movedown_'+k).replaceWith("<span style='font-weight:lighter;color:#CCC;font-size:12px;' id='movedown_"+k+"'>向下</span>");
+                }
+         });
+       }
+       
+       
+       //在尾部新增加一项<tr/>
+      $("#but").click(function(){
+         //隐藏new效果                       
+         $('.newdot').hide();
+          var _len = $(tablejquery+" tr").length;        
+          $(tablejquery).append(newtrtemp(_len)); 
+
+          //设置新增项有new效果
+          $('#new_'+_len).show();
+          
+          //设置服务器的获取长度
+          $('#inputlen').val($(tablejquery+" tr").length-1);
+           //向上及向下的界限处理
+           disableHref();
+           
+            return false;
+        })  
+    
+    
+    // 将第i行的内容设置到第j行.即tr(id=i).replaceWith(tr(id=j))
+    var MoveTr = function(fromIndex,toIndex,keep) {
+        var i = fromIndex;
+        var j = toIndex;
+        var k = keep //是否保留原先的tr,如果keep=false,则原tr被替换没掉了
+        
+            
+            
+            //将当前项(包括表单项值等)设置到第j项项
+            $("tr[id=\'"+(k? j : i)+"\']")
+                       .replaceWith(newtrtemp(j,i));
+        
+    }
+    
+    
+
+    //删除指定索引的<tr/>项
+    deltr =function(index)
+    {
+        var _len = $(tablejquery+" tr").length;
+        
+        //删除当前行
+        $("tr[id='"+index+"']").remove();
+        
+        //new效果检测
+        var hasnewdotID = 0
+        
+        //当前删除项的后面部分执行向上替换
+        for(var i = index+1,j=_len;i<j;i++){
+            //用于检索并获取之前的new效果项
+            if(hasnewdotID==0) {
+                hasnewdotID = $('#new_'+i)[0].style.display != 'none' ? i : 0;
+            }
+            
+            //将当前行设置到上一行(当前行不保留)
+            MoveTr(i,i-1);
+                    
+        }
+        
+         
+    
+        //如果检索到哪个new效果项,设置到新的项去(新项为减1)    
+        if(hasnewdotID != 0) {
+            $('#new_'+(hasnewdotID-1)).show();
+        }
+
+        //设置服务器的获取长度
+          $('#inputlen').val($(tablejquery+" tr").length-1);
+           //向上及向下的界限处理
+           disableHref();
+           
+            return false;
+    }
+    
+
+    //向上移动或向下移动
+    moveup = function(index) {
+        
+        var _len = $(tablejquery+" tr").length;
+        console.log(_len);  
+        //有disableHref();  向上及向下的界限处理后,此下两行可注释,否则开启
+        //if(index==1) {alert('第一条无法向上');return false;}
+        //if(index==_len)  {alert('最后条无法向下');return false;}
+        
+        
+        //新增一行
+        $(tablejquery).append("<tr id='"+_len+"' align='center'><td colspan='8'></td></tr>");
+
+    
+        //检索之前的new效果
+        var hasnewdotID = 0
+        hasnewdotID = $('#new_'+index)[0].style.display != 'none' ? index : 0;
+        if(hasnewdotID==0) {
+            hasnewdotID = $('#new_'+(index-1))[0].style.display != 'none' ? (index-1) : 0;
+        }
+                
+        //将当前行的内容设置到新增行,保留当前行
+        MoveTr(index,_len,true);
+
+         //将上行的内容设置到当前行,保留上行
+         MoveTr(index-1,index,true);
+
+         //将新增行内容设置到上行内容
+         MoveTr(_len,index-1,true);
+         
+        
+
+        //删除新增行
+        var tr=$("tr[id=\'"+_len+"\']")[0];
+        var table=tr.parentNode;  
+        table.removeChild(tr);
+        
+        //如果检索到哪个new效果项,设置到新的项去
+        if(hasnewdotID!=0) {
+            if(hasnewdotID == index) {
+                $('#new_'+(hasnewdotID-1)).show();
+            }else{
+                $('#new_'+index).show();
+            }
+        }
+        
+        //设置服务器的获取长度
+            $('#inputlen').val($(tablejquery+" tr").length-1);
+            //向上及向下的界限处理
+            disableHref();
+           
+            return false;
+    }
+
+    //下增一行<tr/> 或上增一行
+    addnexttr =function(index)
+    {
+        var _len = $(tablejquery+" tr").length;
+         $('.newdot').hide();
+        
+        //新增一行
+        $(tablejquery).append(newtrtemp(_len)); 
+
+        //循环:从当前索引的 [下行的下行]到 [新增的项],行内容从循环当前项的"上行"获得
+        for(var i=_len,j=index+2; i>=j;i--)
+        { 
+            //将上行的内容设置到当前行并保留上行
+              MoveTr(i-1,i,true);
+        }   
+    
+         //还原新增行
+         $("tr[id=\'"+(index+1)+"\']").replaceWith(newtrtemp(index + 1))
+                    
+        //新增行new效果
+          $('#new_'+(index + 1)).show();
+
+        //设置服务器的获取长度
+          $('#inputlen').val($(tablejquery+" tr").length-1);
+           //向上及向下的界限处理
+           disableHref();
+           
+            return false;
+    }
+
+    //供输入类型选择时显示的处理
+    changeBH = function(ele,index) {
+        var v = ele.options[ele.selectedIndex].value ;
+        if(v == '单选框' || v == '下拉框' || v == '多选框') {
+            $('#changetext'+index).hide();
+            $('#changeselect'+index).show();
+        }else{
+            $('#changetext'+index).show();
+            $('#changeselect'+index).hide();
+        }
+    }
+
+
+        $('.newdot').hide();
+        var _len = $("#tab"+" tr").length;        
+        $("#tab").append(newtrtemp(_len)); 
+
+          //设置新增项有new效果
+        $('#new_'+_len).show();
+          //设置服务器的获取长度
+        $('#inputlen').val($(tablejquery+" tr").length-1);
+           //向上及向下的界限处理
+        disableHref();
+}
+
+)
+    
+    
+</script>
+{%endblock%}
+<!--注意:为了兼容chrome浏览器对动态表格行的表单数据能正常提交到服务器端,<form>标签必须放置在<table>外围-->
+{%block content%}
+<form id="submitform" style="display: block;margin-top: 0em;" action="build_finish" method="POST">
+<div style="display: none;">
+    <input name="train_id" value={{train_id}}/>
+    <input name="train_name" value={{name}}/>
+    <input name="seat_list" value="{{seat2}}"/>
+    <input name="catalog" value="{{catalog}}"/>
+</div>
+<div style="overflow-x: auto">
+    <table border-radius: 10px id="tab" border="1" align="center" style="margin-top:20px">
+        <tr id='thead'>
+            <td nowrap="nowrap" width="50px"><input style="width:14px;height:14px" class='form-control' type='checkbox' id='delckall' /></td>
+            <td nowrap="nowrap"  width="100px">#</td>
+            <td nowrap="nowrap"  width="100px">经过站<span style='color:red;font-weight:normal'>*</span></td>
+            <td nowrap="nowrap"  width="100px">到达时间</td>
+            <!-- <td nowrap="nowrap" width="100">到达时间</td> -->
+            <td nowrap="nowrap" width="100px">发车时间</td>
+            <td nowrap="nowrap" width="100px">停留时间</td>
+            {%for k in seat%}
+            <td nowrap="nowrap" width="100px">{{k}}</td>
+            {%endfor%}
+            <td nowrap="nowrap" width="100px">操作</td>
+            <td nowrap="nowrap"  width="100px">排序</td>
+       </tr>
+    </table>
+</div>
+<input type="hidden" name="inputlen" value="0" id="inputlen"/>
+<div id="tbtoolbar" align="center">
+<span class="blocktip"><span style="color:#f80">|</span>号隔开多个值.对于多选框的默认值如果有多个请用<span style="color:#f80">|</span>号隔开</span>
+&nbsp;&nbsp;&nbsp;<input class="btn btn-default" type="button" id="but" value="增加一个"/>
+    &nbsp;&nbsp;&nbsp;<input class="btn btn-default" type="submit" id="submitbtn" onClick="return confirm('确定提交?');" value="提交"/>
+
+    &nbsp;&nbsp;&nbsp;<input class="btn btn-default" type="button" id="delbtn" value="删除选定的行数"/>
+</div>
+</form>
+{%endblock%}

@@ -1,0 +1,36 @@
+{% extends "base2.html" %}
+{%block content%}
+<div style="width: 100%; height:55px"></div>
+<div style="display: flex; max-width: 1000px; margin-left: auto; margin-right: auto; margin-top: 5%; margin-bottom: 5%">
+  <div class="glass_effect2 search_window" style="margin: 0; max-width: 500px; flex-grow: 1; margin-left: auto; margin-right: auto">
+    <div class="search_mask2">
+      <h2>修改密码<i id="edit2" class="edit_button material-icons" active>edit</i></h2>
+      <br>
+      <form id="change_pwd">
+      <div class="search_block">
+        <div style="flex: 1 1 auto">
+          <div class="input_block">
+            <label>当前密码</label>
+              <div class="glass_effect2">
+                <input id="modify_password_old" type="password" placeholder="请输入当前密码">
+              </div>
+            <br>
+            <label>新密码</label>
+              <div class="glass_effect2">
+                <input id="modify_password_new" type="password"placeholder="请输入新密码">
+              </div>
+            <br>
+            <label>重复密码</label>
+              <div class="glass_effect2">
+                <input id="modify_password_rep" type="password"placeholder="请再次输入新密码">
+              </div>
+            <br>
+            </div>
+          </div>
+        </div>
+      </div>
+      </form>
+  </div>
+  </div>
+</div>
+{%endblock%}

@@ -1,0 +1,108 @@
+{% extends "base2.html" %}
+{%block content%}
+<div style="width: 100%; height: 50%;">
+  <div class="web_name" style="top:45%"><span style="font-size: 70px; letter-spacing: 4px">Alice</span><span>β</span></div>
+</div>
+<div style="max-width: 1000px; margin-left: auto; margin-right: auto; margin-bottom: 7px; margin-top: 7px">
+  <div class="glass_effect search_window" style="margin-bottom: 7px">
+    <div class="search_mask">
+      <h2>车票查询</h2>
+      <br>
+      <div class="search_block">
+        <div style="flex: 1 1 auto">
+          <div class="input_block">
+            <label>出发站</label>
+              <div class="glass_effect">
+                <input id="start_s" type="text" placeholder="出发站/出发城市">
+              </div>
+            <br>
+            <label>到达站</label>
+              <div class="glass_effect">
+                <input id="end_s" type="text" placeholder="到达站/到达城市">
+              </div>
+            </div>
+            <div class="link_line">
+             <div class="half_line" style="right: 0px; top: 0px"></div>
+             <div class="half_line" style="right: 0px; bottom: 0px"></div>
+            </div>
+            <i class="material-icons swap_button">swap_vert</i>
+          </div>
+          <div style="flex: 1 1 auto; min-width: 300px;">
+            <div class="input_block">
+              <label>出发日期</label>
+              <div class="glass_effect">
+                <input id="start_date" type="date" style="font-size: 21px">
+              </div>
+              <br>
+              <div class="flex_shell">
+                <div class="my_checkbox" value="0">
+                  <span style="font-size: 18px">查询中转车票<i class="material-icons checkbox_icon">check_box_outline_blank</i></span>
+                </div>
+                <div class="search_button">搜索</div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+<div id="in_city" style="display: none"></div>
+<div class="glass_effect search_window" id="empty_window" style="max-height: 0px; max-width: 0px; opacity: 0">
+  <div class="search_mask" style="padding-right: 50px">
+    <center><span style="font-size: 17px;" id="filter_message"> 搜索结果为空哦</span></center>
+  </div>
+</div>
+<div class="glass_effect search_window" id="tag_window" style="max-height: 0px; max-width: 0px; opacity: 0">
+  <div class="search_mask" style="padding-right: 50px; padding-bottom: 30px">
+    <h3>类型</h3>
+    <div class="tag_list" id="car_type">
+      <div class="tag" value="1" all>全部</div>
+    </div>
+    <br>
+    <h3>排序</h3>
+    <div class="tag_list">
+      <div class="tag" value="1" id="inc">升序</div><div class="tag" value="0" id="dec" style="margin-right: 50px">降序</div>
+      <div class="sort_key">
+        <div class="tag" value="1" id="leaving_time">出发时间</div><div class="tag" value="0" id="arriving_time">到达时间</div><div class="tag" value="0" id="used_time">历时</div><div class="tag" value="0" id="price">最低票价</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="tmp_container" id="tmp">
+</div>
+
+<div class="tmp_container" id="result">
+</div>
+
+<div id="display_container">
+</div>
+<script type="text/javascript">
+
+	var cityA = $(".city_a_le1 a"); //城市
+	var pla = $("#start_s");  //出发地
+	var dest = $("#end_s");  //目的地
+	// 默认值
+	inCity.height = "auto";  //城市选择框  高
+	inCity.id = "#in_city";  //城市选择框  父级ID
+	inCity.Children = '.city_a_le1';  //城市名box
+	// 初始化 城市HTML模板
+	$(inCity.id).prepend(inCity._template.join(''));
+	inCity.Hot(cityA);
+	
+	//城市 导航
+	var apay = $(".screen a");
+
+	var placeThis; //当前选择标签
+	apay.click(function(obj){  //城市导航
+		inCity.payment($(this));
+	})
+
+	inCity.place(pla); //出发地
+	inCity.destination(dest);  //目的地
+	inCity.cityClick(cityA); //显示赋值城市
+	$(inCity.id).mousedown(function(){
+		event.preventDefault()
+	})
+</script>
+{%endblock%}

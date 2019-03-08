@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Flasky - Build Train{% endblock %}
+
+<link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css">
+{% block page_content %}
+<div class="page-header">
+    <h1>Build Your Train</h1>
+</div>
+<form method="POST">
+<div class="col-md-4">
+    <div class="form-group ">
+        <label class="control-label" for="train_id">Train id</label>
+          <input class="form-control" id="train_id" name="train_id" type="text" value="">
+    </div>
+    <div class="form-group ">
+            <label class="control-label" for="name">Name</label>
+              <input class="form-control" id="name" name="name" type="text" value="">
+        </div> 
+    <div> 
+        <div>
+            <label class="control-label" for="catalog">Catalog</label>
+        </div>
+            {% for k,v in form.catalog.choices %}
+                <input type="radio" name="catalog" value="{{ k }}" >
+                <label for="">&nbsp;{{ v }}</label>
+            {% endfor %}
+     </div>
+    <div> 
+        <div>
+            <label class="control-label" for="seat">Seat</label>
+        </div>
+        {% for k,v in form.pay.choices %}
+        <input type="checkbox" name="pay" value="{{ k }}" >
+        <label for="">&nbsp;{{ v }}</label>
+        {% endfor %}
+    </div>
+    <input class="btn btn-default" id="submit" name="submit" type="submit" value="Submit">
+</form>
+</div>
+{% endblock %}
