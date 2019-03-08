@@ -1,11 +1,9 @@
-Flasky
-======
+## Ticket System
 
-This repository contains the source code examples for the second edition of my O'Reilly book [Flask Web Development](http://www.flaskbook.com).
+Front end use Flask
 
-The commits and tags in this repository were carefully created to match the sequence in which concepts are presented in the book. Please read the section titled "How to Work with the Example Code" in the book's preface for instructions.
+Back end use our own database implemented in C++
 
-For Readers of the First Edition of the Book
---------------------------------------------
+Use boost lib to communicate
 
-The code examples for the first edition of the book were moved to a different repository: [https://github.com/miguelgrinberg/flasky-first-edition](https://github.com/miguelgrinberg/flasky-first-edition).
+reference:《Flask Web Development》
